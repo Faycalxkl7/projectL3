@@ -1,5 +1,6 @@
 <script>
     import { page } from '$app/stores';
+    export let data;
 </script>
 
 <div class="main-container">
@@ -10,61 +11,87 @@
             <span>WellnessWing</span>
         </div>
         <div class="sidebar-buttons">
-            <a href="/dashboard" class="button-in-sidebar">
-                <span
-                    class="icon-and-text-wrap"
-                    class:selected={$page.url.pathname === '/dashboard'}
-                >
-                    <div class="icon-in-button">
-                        <img src="/images/logos/home.svg" alt="home-icon" />
-                    </div>
-                    <span class="text-in-button"> Dashboard </span>
-                </span>
-            </a>
-            <a href="/dashboard/messages" class="button-in-sidebar">
-                <span
-                    class="icon-and-text-wrap"
-                    class:selected={$page.url.pathname === '/dashboard/messages'}
-                >
-                    <div class="icon-in-button">
-                        <img src="/images/logos/messages.svg" alt="home-icon" />
-                    </div>
-                    <span class="text-in-button"> Messages </span>
-                </span>
-            </a>
-            <a href="/dashboard/doctors" class="button-in-sidebar">
-                <span
-                    class="icon-and-text-wrap"
-                    class:selected={$page.url.pathname === '/dashboard/doctors'}
-                >
-                    <div class="icon-in-button">
-                        <img src="/images/logos/profile-2.svg" alt="home-icon" />
-                    </div>
-                    <span class="text-in-button"> Doctors </span>
-                </span>
-            </a>
-            <a href="/dashboard/services" class="button-in-sidebar">
-                <span
-                    class="icon-and-text-wrap"
-                    class:selected={$page.url.pathname === '/dashboard/services'}
-                >
-                    <div class="icon-in-button">
-                        <img src="/images/logos/service.svg" alt="home-icon" />
-                    </div>
-                    <span class="text-in-button"> Services </span>
-                </span>
-            </a>
-            <a href="/dashboard/patients" class="button-in-sidebar">
-                <span
-                    class="icon-and-text-wrap"
-                    class:selected={$page.url.pathname === '/dashboard/patients'}
-                >
-                    <div class="icon-in-button">
-                        <img src="/images/logos/profile.svg" alt="home-icon" />
-                    </div>
-                    <span class="text-in-button"> Patients </span>
-                </span>
-            </a>
+            {#if data.role === 'admin'}
+                <a href="/dashboard" class="button-in-sidebar">
+                    <span
+                        class="icon-and-text-wrap"
+                        class:selected={$page.url.pathname === '/dashboard'}
+                    >
+                        <div class="icon-in-button">
+                            <img src="/images/logos/home.svg" alt="home-icon" />
+                        </div>
+                        <span class="text-in-button"> Dashboard </span>
+                    </span>
+                </a>
+                <a href="/dashboard/messages" class="button-in-sidebar">
+                    <span
+                        class="icon-and-text-wrap"
+                        class:selected={$page.url.pathname === '/dashboard/messages'}
+                    >
+                        <div class="icon-in-button">
+                            <img src="/images/logos/messages.svg" alt="home-icon" />
+                        </div>
+                        <span class="text-in-button"> Messages </span>
+                    </span>
+                </a>
+                <a href="/dashboard/doctors" class="button-in-sidebar">
+                    <span
+                        class="icon-and-text-wrap"
+                        class:selected={$page.url.pathname === '/dashboard/doctors'}
+                    >
+                        <div class="icon-in-button">
+                            <img src="/images/logos/profile-2.svg" alt="home-icon" />
+                        </div>
+                        <span class="text-in-button"> Doctors </span>
+                    </span>
+                </a>
+                <a href="/dashboard/services" class="button-in-sidebar">
+                    <span
+                        class="icon-and-text-wrap"
+                        class:selected={$page.url.pathname === '/dashboard/services'}
+                    >
+                        <div class="icon-in-button">
+                            <img src="/images/logos/service.svg" alt="home-icon" />
+                        </div>
+                        <span class="text-in-button"> Services </span>
+                    </span>
+                </a>
+                <a href="/dashboard/patients" class="button-in-sidebar">
+                    <span
+                        class="icon-and-text-wrap"
+                        class:selected={$page.url.pathname === '/dashboard/patients'}
+                    >
+                        <div class="icon-in-button">
+                            <img src="/images/logos/profile.svg" alt="home-icon" />
+                        </div>
+                        <span class="text-in-button"> Patients </span>
+                    </span>
+                </a>
+            {/if}
+            {#if data.role !== 'admin'}
+                <a href="/dashboard/history" class="button-in-sidebar">
+                    <span
+                        class="icon-and-text-wrap"
+                        class:selected={$page.url.pathname.startsWith('/dashboard/history')}
+                    >
+                        <div class="icon-in-button">
+                            <img src="/images/logos/history.svg" alt="home-icon" />
+                        </div>
+                        <span class="text-in-button"> History </span>
+                    </span>
+                </a>
+                <a href="/dashboard/reservation" class="button-in-sidebar">
+                    <span
+                        class="icon-and-text-wrap"
+                        class:selected={$page.url.pathname.startsWith('/dashboard/reservation')}
+                    >
+                        <div class="icon-in-button">
+                            <img src="/images/logos/history.svg" alt="home-icon" />
+                        </div>
+                        <span class="text-in-button"> Reservation </span>
+                    </span>
+                </a>
+            {/if}
             <a href="/dashboard/settings" class="button-in-sidebar">
                 <span
                     class="icon-and-text-wrap"
@@ -76,18 +103,20 @@
                     <span class="text-in-button"> Settings </span>
                 </span>
             </a>
-            <a href="/dashboard/notifications" class="button-in-sidebar notification">
-                <span
-                    class="icon-and-text-wrap"
-                    class:selected={$page.url.pathname === '/dashboard/notifications'}
-                >
-                    <div class="icon-in-button">
-                        <img src="/images/logos/notifications.svg" alt="home-icon" />
-                    </div>
-                    <span class="text-in-button"> Notifications </span>
-                    <div class="badge">3</div>
-                </span>
-            </a>
+            {#if data.role !== 'admin'}
+                <a href="/dashboard/notifications" class="button-in-sidebar notification">
+                    <span
+                        class="icon-and-text-wrap"
+                        class:selected={$page.url.pathname.startsWith('/dashboard/notifications')}
+                    >
+                        <div class="icon-in-button">
+                            <img src="/images/logos/notifications.svg" alt="home-icon" />
+                        </div>
+                        <span class="text-in-button"> Notifications </span>
+                        <!-- <div class="badge">3</div> -->
+                    </span>
+                </a>
+            {/if}
         </div>
     </div>
     <header>
@@ -232,6 +261,7 @@
         border-bottom: 1px solid #ddd;
         position: fixed;
         width: calc(100% - 256px);
+        z-index: 9999999999;
     }
 
     .logo-container {
@@ -302,7 +332,7 @@
         background-color: #181b1bcc;
         color: #fafafa;
     }
-    a{
+    a {
         text-decoration: none;
         color: #000;
     }

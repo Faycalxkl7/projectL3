@@ -9,7 +9,7 @@
             data: { subscription }
         } = supabaseClient.auth.onAuthStateChange(() => {
             // do what ever you want to do when the auth state changes ):
-            invalidateAll();
+            /* invalidateAll(); */
         });
 
         return () => {

@@ -1,43 +1,51 @@
 <script>
-    import { onMount } from 'svelte';
-    let services = [
-        {
-            title: 'Routine Checkup',
-            price: '75DA',
-            description: 'Regular checkup to monitor your overall health and well-being.',
-            date: 'June 15, 2023'
-        },
-        {
-            title: 'Flu Shot',
-            price: '25DA',
-            description: 'Get your annual flu shot to stay healthy during the winter.',
-            date: 'November 10, 2022'
-        },
-        {
-            title: 'Skin Cancer Screening',
-            price: '150DA',
-            description: 'Comprehensive skin examination to detect any signs of skin cancer.',
-            date: 'August 20, 2022'
-        },
-        {
-            title: 'Allergy Testing',
-            price: '100DA',
-            description: 'Comprehensive allergy testing to identify any potential triggers.',
-            date: 'April 5, 2022'
-        },
-        {
-            title: 'Annual Physical',
-            price: '200DA',
-            description: 'Comprehensive physical examination to assess your overall health.',
-            date: 'January 15, 2022'
-        },
-        {
-            title: 'Diabetes Screening',
-            price: '80DA',
-            description: 'Comprehensive screening to check for signs of diabetes.',
-            date: 'October 1, 2021'
-        }
+    export let data;
+    let selected = 'price';
+    let selectedPriceRanges = [
+        { label: '0-50', applied: true, min: 0, max: 50 },
+        { label: '50-100', applied: true, min: 50, max: 100 },
+        { label: '100-200', applied: true, min: 100, max: 200 },
+        { label: '200+', applied: true, min: 200, max: Infinity }
     ];
+
+    let { appointments } = data;
+    let filteredAppointments = [];
+
+    const sortFunctions = {
+        date: (a, b) => new Date(b.created_at) - new Date(a.created_at),
+        type: (a, b) => a.services.name.localeCompare(b.services.name),
+        price: (a, b) => a.services.price - b.services.price
+    };
+
+    function sortAndFilterAppointments() {
+        // if no appointments, return
+        if (!appointments) return;
+        filteredAppointments = appointments
+            .filter((appointment) => {
+                const price = appointment.services.price;
+                return selectedPriceRanges.some(
+                    (range) => range.applied && price >= range.min && price < range.max
+                );
+            })
+            .sort(sortFunctions[selected] || (() => 0));
+    }
+
+    // Initial sort and filter
+    sortAndFilterAppointments();
+
+    // Reactive statements
+    $: {
+        if (appointments && (selected || selectedPriceRanges)) {
+            sortAndFilterAppointments();
+        }
+    }
+
+    function handleSearch(e) {
+        const query = e.target.value.toLowerCase();
+        filteredAppointments = appointments.filter((appointment) => {
+            return appointment.services.name.toLowerCase().includes(query);
+        });
+    }
 </script>
 
 <header>
@@ -82,7 +90,11 @@
             <div class="filters">
                 <div class="search">
                     <i class="fa-solid fa-magnifying-glass search-icon" style="color: #000000;"></i>
-                    <input type="text" placeholder="Search services..." />
+                    <input
+                        type="text"
+                        placeholder="Search services..."
+                        on:input={(e) => handleSearch(e)}
+                    />
                 </div>
                 <div class="dropdown">
                     <button class="dropdown-trigger">
@@ -93,15 +105,34 @@
                         <label for="sort">Sort by</label>
                         <hr />
                         <div>
-                            <input type="radio" id="date" name="sort" value="date" checked />
+                            <input
+                                type="radio"
+                                id="date"
+                                name="sort"
+                                value="date"
+                                bind:group={selected}
+                                checked
+                            />
                             <label for="date">Date</label>
                         </div>
                         <div>
-                            <input type="radio" id="type" name="sort" value="type" />
+                            <input
+                                type="radio"
+                                id="type"
+                                name="sort"
+                                value="type"
+                                bind:group={selected}
+                            />
                             <label for="type">Type</label>
                         </div>
                         <div>
-                            <input type="radio" id="price" name="sort" value="price" />
+                            <input
+                                type="radio"
+                                id="price"
+                                name="sort"
+                                value="price"
+                                bind:group={selected}
+                            />
                             <label for="price">Price</label>
                         </div>
                     </div>
@@ -114,7 +145,18 @@
                     <div class="dropdown-content">
                         <label for="">Price Range</label>
                         <hr />
-                        <div>
+                        {#each selectedPriceRanges as priceRange, index}
+                            <div>
+                                <input
+                                    type="checkbox"
+                                    id={priceRange.label}
+                                    value={priceRange.label}
+                                    bind:checked={selectedPriceRanges[index].applied}
+                                />
+                                <label for={priceRange.label}>{priceRange.label}</label>
+                            </div>
+                        {/each}
+                        <!-- <div>
                             <input type="checkbox" id="0-50" value="0-50" />
                             <label for="0-50">0DA - 50DA</label>
                         </div>
@@ -129,45 +171,52 @@
                         <div>
                             <input type="checkbox" id="200+" value="200+" />
                             <label for="200+">+200DA</label>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
             </div>
         </div>
 
         <div class="services-grid">
-            {#each services as service}
-                <div class="card">
-                    <div class="card-content">
-                        <div class="card-header">
-                            <h3>{service.title}</h3>
-                            <div class="price">{service.price}</div>
-                        </div>
-                        <p>name of user : mohamed</p>
-                        <!--description of user-->
-                        <p>{service.description}</p>
-                        <p>addres : ##################</p>
-                        <p>phone number of user</p>
-                        <div class="card-footer">
-                            <div class="date">{service.date}</div>
-                        </div>
-                        <div class="btn">
-                            <button class="accept">accept</button>
-                            <button class="accept">refuse</button>
+            {#if filteredAppointments.length === 0}
+                <div class="nothing">
+                    <h1>Nothing found</h1>
+                </div>
+            {:else}
+                {#each filteredAppointments as appointment}
+                    <div class="card">
+                        <div class="card-content">
+                            <div class="card-header">
+                                <h3>{appointment.services.name}</h3>
+                                <div class="price">{appointment.services.price}DA</div>
+                            </div>
+                            <p>name of user : {appointment.profiles.full_name}</p>
+                            <p>{appointment.services.description}</p>
+                            <p>addres : {appointment.address}</p>
+                            <p>phone number of user: {appointment.phone_number}</p>
+                            <div class="card-footer">
+                                <div class="date">{appointment.created_at}</div>
+                            </div>
+                            <div class="btn">
+                                <button class="accept">accept</button>
+                                <button class="accept">refuse</button>
+                            </div>
                         </div>
                     </div>
-                </div>
-            {/each}
+                {/each}
+            {/if}
         </div>
 
-        <div class="pagination">
-            <a href="/doctors" class="page-link">Previous</a>
-            <a href="/doctors" class="page-link">1</a>
-            <a href="/doctors" class="page-link active">2</a>
-            <a href="/doctors" class="page-link">3</a>
-            <span class="ellipsis">...</span>
-            <a href="/doctors" class="page-link">Next</a>
-        </div>
+        {#if !(filteredAppointments.length === 0)}
+            <div class="pagination">
+                <a href="/doctors" class="page-link">Previous</a>
+                <a href="/doctors" class="page-link">1</a>
+                <a href="/doctors" class="page-link active">2</a>
+                <a href="/doctors" class="page-link">3</a>
+                <span class="ellipsis">...</span>
+                <a href="/doctors" class="page-link">Next</a>
+            </div>
+        {/if}
     </div>
 </main>
 
@@ -320,7 +369,7 @@
     .services-grid {
         display: grid;
         gap: 1.5rem;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        /* grid-template-columns: repeat(3, minmax(300px, 1fr)); */
     }
     .card {
         border: 1px solid #ccc;
@@ -382,5 +431,12 @@
         border-radius: 5px;
         padding: 0.5rem 1rem;
         color: #ffffff;
+    }
+
+    .nothing {
+        height: 30vw;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
 </style>

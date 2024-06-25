@@ -1,6 +1,6 @@
 <script>
     import { writable, derived } from 'svelte/store';
-
+    import { enhance } from '$app/forms';
     import Modal from '$lib/components/Modal.svelte';
     let showModal = false;
 
@@ -8,7 +8,6 @@
     function down() {
         val = !val;
     }
-
 
     let doctors = writable([
         {
@@ -72,115 +71,176 @@
                             <h2>Create Doctor Account</h2>
                             <p>Fill out the form to create a new doctor account.</p>
                         </div>
-                        <form action="">
+                        <form action="?/add" method="post" use:enhance>
                             <div class="group">
                                 <div class="info">
                                     <label for="name">Doctor Name</label>
-                                    <input type="text" name="name"  placeholder="Enter your name">
+                                    <input type="text" name="name" placeholder="Enter your name" />
                                 </div>
-                    
+
                                 <div class="info">
                                     <label for="name">Specialty</label>
-                                    <input type="text" name="Specialty"  placeholder="Enter your Specialty">
+                                    <input
+                                        type="text"
+                                        name="Specialty"
+                                        placeholder="Enter your Specialty"
+                                    />
                                 </div>
                             </div>
                             <div class="group">
                                 <div class="info">
                                     <label for="email">Email</label>
-                                    <input type="email" name="email"  placeholder="Enter your Email">
+                                    <input
+                                        type="email"
+                                        name="email"
+                                        placeholder="Enter your Email"
+                                    />
                                 </div>
-                    
+
                                 <div class="info">
                                     <label for="Username">Username</label>
-                                    <input type="text" name="Username"  placeholder="Enter your Username">
+                                    <input
+                                        type="text"
+                                        name="Username"
+                                        placeholder="Enter your Username"
+                                    />
                                 </div>
                             </div>
                             <div class="group">
-                            
                                 <div class="info">
                                     <label for="password">Password</label>
-                                    <input type="password" name="password" id="password"  placeholder="Enter your password">
+                                    <input
+                                        type="password"
+                                        name="password"
+                                        id="password"
+                                        placeholder="Enter your password"
+                                    />
                                 </div>
-                    
+
                                 <div class="info">
                                     <label for="phone_number">Phone Number</label>
-                                    <input type="number" name="phone_number"  placeholder="Enter your phone_number">
+                                    <input
+                                        type="number"
+                                        name="phone_number"
+                                        placeholder="Enter your phone_number"
+                                    />
                                 </div>
                             </div>
                             <div class="group">
                                 <div class="sex">
                                     <p>Sex:</p>
-                                    <input type="radio" id="male" name="sex" value="male" >
+                                    <input type="radio" id="male" name="sex" value="male" />
                                     <label for="male">male</label>
-                                    <input type="radio" id="female" name="sex" value="female" >
+                                    <input type="radio" id="female" name="sex" value="female" />
                                     <label for="female">female</label>
                                 </div>
-                    
+
                                 <div class="info">
                                     <label for="address">Address</label>
-                                    <input type="text" name="address"  placeholder="Enter your address">
+                                    <input
+                                        type="text"
+                                        name="address"
+                                        placeholder="Enter your address"
+                                    />
                                 </div>
                             </div>
-                    
+
                             <div class="schedule">
                                 <h1>Schedule:</h1>
                                 {#each ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'] as day}
-                                  <div class="day">
-                                    <h2>{day.charAt(0).toUpperCase() + day.slice(1)}</h2>
-                                    <div class="time">
-                                      <div>
-                                        <label for={day + '_start'}>start of day :</label>
-                                        <input type="time" id={day + '_start'} >
-                                      </div>
-                                      <div>
-                                        <label for={day + '_end'}>end of day :</label>
-                                        <input type="time" id={day + '_end'} >
-                                      </div>
+                                    <div class="day">
+                                        <h2>{day.charAt(0).toUpperCase() + day.slice(1)}</h2>
+                                        <div class="time">
+                                            <div>
+                                                <label for={day + '_start'}>start of day :</label>
+                                                <input
+                                                    name={day + '_start'}
+                                                    type="time"
+                                                    id={day + '_start'}
+                                                />
+                                            </div>
+                                            <div>
+                                                <label for={day + '_end'}>end of day :</label>
+                                                <input
+                                                    name={day + '_end'}
+                                                    type="time"
+                                                    id={day + '_end'}
+                                                />
+                                            </div>
+                                        </div>
                                     </div>
-                                  </div>
                                 {/each}
                             </div>
                             <div class="services">
-                                <button on:click={down} class="select-btn" id="select">
+                                <span on:click={down} class="select-btn" id="select">
                                     <span>Select services</span>
                                     <i class="fa-solid fa-chevron-down"></i>
-                                </button>
+                                </span>
                                 <ul class:hide={val} class:show={!val} class="list-items">
                                     <li class="item">
-                                        <input type="checkbox" id="vehicle1" name="vehicle1" value="Bike">
-                                        <label for="vehicle1"> I have  bike</label>
+                                        <input
+                                            type="checkbox"
+                                            id="vehicle1"
+                                            name="vehicle1"
+                                            value="Bike"
+                                        />
+                                        <label for="vehicle1"> I have bike</label>
                                     </li>
                                     <li class="item">
-                                        <input type="checkbox" id="vehicle2" name="vehicle2" value="Bike">
-                                        <label for="vehicle2"> I have  bike</label>
+                                        <input
+                                            type="checkbox"
+                                            id="vehicle2"
+                                            name="vehicle2"
+                                            value="Bike"
+                                        />
+                                        <label for="vehicle2"> I have bike</label>
                                     </li>
                                     <li class="item">
-                                        <input type="checkbox" id="vehicle3" name="vehicle3" value="Bike">
-                                        <label for="vehicle3"> I have  bike</label>
+                                        <input
+                                            type="checkbox"
+                                            id="vehicle3"
+                                            name="vehicle3"
+                                            value="Bike"
+                                        />
+                                        <label for="vehicle3"> I have bike</label>
                                     </li>
                                     <li class="item">
-                                        <input type="checkbox" id="vehicle4" name="vehicle4" value="Bike">
-                                        <label for="vehicle4"> I have  bike</label>
+                                        <input
+                                            type="checkbox"
+                                            id="vehicle4"
+                                            name="vehicle4"
+                                            value="Bike"
+                                        />
+                                        <label for="vehicle4"> I have bike</label>
                                     </li>
                                     <li class="item">
-                                        <input type="checkbox" id="vehicle5" name="vehicle5" value="Bike">
-                                        <label for="vehicle5"> I have  bike</label>
+                                        <input
+                                            type="checkbox"
+                                            id="vehicle5"
+                                            name="vehicle5"
+                                            value="Bike"
+                                        />
+                                        <label for="vehicle5"> I have bike</label>
                                     </li>
                                     <li class="item">
-                                        <input type="checkbox" id="vehicle6" name="vehicle6" value="Bike">
-                                        <label for="vehicle6"> I have  bike</label>
+                                        <input
+                                            type="checkbox"
+                                            id="vehicle6"
+                                            name="vehicle6"
+                                            value="Bike"
+                                        />
+                                        <label for="vehicle6"> I have bike</label>
                                     </li>
                                 </ul>
                             </div>
                             <div class="btn">
-                                <button type="submit"
-                                 class="submit">Create Account</button>
+                                <input type="submit" class="submit" value="Create Account" />
                             </div>
                         </form>
                     </div>
-                </Modal> 
+                </Modal>
             </div>
-            
+
             <div class="content">
                 <div style="margin-top: 16px;">
                     <input
@@ -360,17 +420,17 @@
         font-weight: 700;
     }
     /*form style*/
-    .all{
+    .all {
         width: 50vw;
         height: auto;
         display: flex;
         justify-content: center;
         align-items: center;
         flex-direction: column;
-        border:1px solid #ccc;
+        border: 1px solid #ccc;
         border-radius: 10px;
         padding: 20px;
-        font-family:'Arial Narrow', Arial, sans-serif;
+        font-family: 'Arial Narrow', Arial, sans-serif;
     }
     form {
         width: 100%;
@@ -380,27 +440,26 @@
         justify-content: center;
         padding: 20px;
         gap: 2rem;
-    }  
-    .group{
+    }
+    .group {
         width: 100%;
         display: flex;
         justify-content: space-between;
     }
-    .info{
+    .info {
         font-size: 14px;
         display: flex;
         flex-direction: column;
         gap: 0.5rem;
         font-size: 18px;
     }
-    .info input{
+    .info input {
         min-width: 250px;
         padding: 10px;
         border: 1px solid #ccc;
         border-radius: 5px;
-
     }
-    .select-btn{
+    .select-btn {
         background-color: #ffffff;
         width: 300px;
         height: 40px;
@@ -413,20 +472,20 @@
         position: relative;
         font-size: 18px;
     }
-    button{
+    button {
         border: none;
         cursor: pointer;
     }
-    ul{
+    ul {
         list-style: none;
         padding: 0;
         margin: 10px;
     }
-    .services{
+    .services {
         margin: auto;
         position: relative;
     }
-    .list-items{
+    .list-items {
         position: absolute;
         width: 300px;
         top: 110%;
@@ -436,56 +495,54 @@
         margin: 0;
         padding: 0;
     }
-    .hide{
+    .hide {
         display: none;
     }
-    .show{
+    .show {
         display: block;
     }
-    .list-items li{
+    .list-items li {
         padding: 10px;
     }
-    .schedule{
+    .schedule {
         display: flex;
         flex-direction: column;
         width: 100%;
         gap: 2rem;
         margin-bottom: 50px;
     }
-    .day{
-        
+    .day {
         display: flex;
         flex-direction: column;
         align-items: center;
         gap: 0.5rem;
         padding: 10px;
-        border-bottom:1px solid black;
+        border-bottom: 1px solid black;
     }
-    .day .time{
+    .day .time {
         width: 100%;
         display: flex;
         justify-content: space-between;
         align-items: center;
-        
     }
-    .day .time div{
+    .day .time div {
         padding: 10px;
         display: flex;
         align-items: center;
         gap: 1.5rem;
     }
-    .day .time div input{
+    .day .time div input {
         width: 120px;
         height: 30px;
     }
-    .btn{
+    .btn {
         width: 100%;
         display: flex;
         justify-content: end;
     }
-    .submit{
+    .submit {
         background-color: #000000;
-        color:#FFFFFF;
+        color: #ffffff;
         padding: 15px 20px;
         border-radius: 5px;
         margin: 20px;
