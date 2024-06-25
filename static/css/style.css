@@ -1,0 +1,16 @@
+@font-face {
+    font-family: 'Inter';
+    src: url('/fonts/Inter-VariableFont_slnt,wght.ttf');
+}
+
+* {
+    font-family: 'Inter', 'Inter Fallback';
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.main {
+    padding: 20px;
+    padding-top: 102px;
+}
