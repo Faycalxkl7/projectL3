@@ -40,7 +40,7 @@ export const handle = async ({ event, resolve }) => {
     }
 
     if (
-        event.url.pathname.startsWith('/dashboard') ||
+        event.url.pathname === '/dashboard' ||
         event.url.pathname.startsWith('/dashboard/doctor') ||
         event.url.pathname.startsWith('/dashboard/services') ||
         event.url.pathname.startsWith('/dashboard/messages') ||
